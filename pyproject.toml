@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "school-diary-posgresql-fastapi"
+name = "Project"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Olof333"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
@@ -12,7 +12,7 @@ Jinja2 = "^3.0.1"
 aiofiles = "^0.7.0"
 uvicorn = "^0.14.0"
 python-multipart = "^0.0.5"
-pg8000 = "^1.19.5"
+mysql-connector-python = "^8.0.23"
 
 [tool.poetry.dev-dependencies]
 
