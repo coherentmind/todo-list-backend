@@ -1,10 +1,8 @@
-from uuid import UUID
-from fastapi_utils.api_model import APIModel
 from pydantic.main import BaseModel
 
 
 class UserCreate(BaseModel):
-    nickname: str
+    email: str
     password: str
 
 
@@ -13,5 +11,5 @@ class UserUpdate(BaseModel):
 
 
 class UserReturn(BaseModel):
-    id: UUID
-    nickname: str
+    id: int
+    email: str

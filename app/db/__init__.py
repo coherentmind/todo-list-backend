@@ -1,10 +1,20 @@
 import mysql.connector
+from mysql.connector import MySQLConnection
+import os
 
 
-def connect():
+def connect() -> MySQLConnection:
     return mysql.connector.connect(
-        user="user",
-        password="password",
+        user="root",
+        password="12345678",
         database="main",
-        host="127.0.0.1:8000",
+        host="mysql",
     )
+
+
+def init_db(db: MySQLConnection) -> None:
+    scripts_location = "app/db/sql"
+    cursor = db.cursor()
+    for i in os.listdir(scripts_location):
+        with open(scripts_location + "/" + i) as file:
+            cursor.execute(file.read())

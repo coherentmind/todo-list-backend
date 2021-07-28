@@ -1,3 +1,3 @@
-# from .user import CRUDUser
+from .user import UserCRUD
 
-# user = CRUDUser()
+user = UserCRUD()
