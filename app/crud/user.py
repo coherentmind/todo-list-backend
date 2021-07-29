@@ -61,4 +61,5 @@ class UserCRUD(BaseCRUD[schemas.UserCreate, schemas.UserUpdate, schemas.UserRetu
         if (data.email, data.password) not in cursor.execute(
             f"SELECT * FROM users WHERE (email='{data.email}', password='{data.password}')"
         ):
+            cursor.close()
             return None
