@@ -1,5 +1,6 @@
 from mysql.connector import cursor
 from mysql.connector.cursor import CursorBase
+from pydantic.errors import EmailError
 from app.crud.base import BaseCRUD
 from typing import Any, Optional
 from app import schemas
@@ -53,5 +54,11 @@ class UserCRUD(BaseCRUD[schemas.UserCreate, schemas.UserUpdate, schemas.UserRetu
         cursor.close()
         return None
 
-    def authenticate(self, db: MySQLConnection, *, data: schemas.UserReturn) -> None:
-        ...
+    def authenticate(
+        self, db: MySQLConnection, *, data: schemas.UserCreate
+    ) -> schemas.UserReturn:
+        cursor = db.cursor()
+        if (data.email, data.password) not in cursor.execute(
+            f"SELECT * FROM users WHERE (email='{data.email}', password='{data.password}')"
+        ):
+            return None
