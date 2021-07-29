@@ -37,20 +37,23 @@ class UserCRUD(BaseCRUD[schemas.UserCreate, schemas.UserUpdate, schemas.UserRetu
         )
         cursor.execute(f"SELECT LAST_INSERT_ID()")
         (id,) = next(cursor)
+        db.commit()
         cursor.close()
         return self.get(db, id=id)
 
     def update(self, db: MySQLConnection, *, id: int, data: schemas.UserUpdate) -> None:
         cursor = db.cursor()
         cursor.execute(
-            f"UPDATE users SET password='{data.password}' WHERE id='{data.id}'"
+            f"UPDATE users SET password='{data.password}' WHERE id='{id}'"
         )
+        db.commit()
         cursor.close()
         return None
 
     def delete(self, db: MySQLConnection, *, id: int) -> None:
         cursor = db.cursor()
         cursor.execute(f"DELETE FROM users WHERE id='{id}'")
+        db.commit()
         cursor.close()
         return None
 

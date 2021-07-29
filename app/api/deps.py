@@ -28,7 +28,7 @@ def get_current_user(
     try:
         data = next(cursor)
     except StopIteration:
-        raise HTTPException(401, details="Incorrect email or password")
+        raise HTTPException(401, detail="Incorrect email or password")
     else:
         id, email = data
         return schemas.UserReturn(id=id, email=email)
