@@ -45,8 +45,13 @@ class UserCRUD(BaseCRUD[schemas.UserCreate, schemas.UserUpdate, schemas.UserRetu
             f"UPDATE users SET password='{data.password}' WHERE id='{data.id}'"
         )
         cursor.close()
+        return None
 
     def delete(self, db: MySQLConnection, *, id: int) -> None:
         cursor = db.cursor()
         cursor.execute(f"DELETE FROM users WHERE id='{id}'")
         cursor.close()
+        return None
+
+    def authenticate(self, db: MySQLConnection, *, data: schemas.UserReturn) -> None:
+        ...
