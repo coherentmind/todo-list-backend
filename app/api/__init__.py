@@ -9,15 +9,9 @@ router = APIRouter()
 router.include_router(user.router, prefix="/user")
 
 
-@router.get("/")
-async def root(db: MySQLConnection = Depends(deps.get_db)):
-    data = crud.user.create(db, data=schemas.UserCreate(email="test", password="test"))
-    return {"message": data}
-
-
 @router.post("/")
 def create_new_user(
-    db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserCreate = Depends()
+    db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserCreate
 ) -> schemas.UserCreate:
     data = crud.user.create(
         db, data=schemas.UserCreate(email=data.email, password=data.password)
@@ -27,15 +21,9 @@ def create_new_user(
 
 @router.put("/")
 def update_user_data(
-    db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserUpdate = Depends()
+    data: schemas.UserUpdate,
+    db: MySQLConnection = Depends(deps.get_db),
+    current_user: schemas.UserReturn = Depends(deps.get_current_user),
 ) -> schemas.UserUpdate:
-    data = crud.user.update(db, data=schemas.UserUpdate(password=data.password))
+    crud.user.update(db, id=current_user.id, data=data)
     return schemas.Msg(msg="User was successfully updated")
-
-
-@router.delete("/")
-def delete_user(
-    db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserReturn = Depends()
-) -> schemas.UserReturn:
-    crud.user.delete(db, data=schemas.UserUpdate(id=str(data.id)))
-    return schemas.Msg(msg="User was successfully deleted")
