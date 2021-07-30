@@ -15,6 +15,7 @@ python-multipart = "^0.0.5"
 mysql-connector-python = "^8.0.23"
 pydantic = {extras = ["email"], version = "^1.8.2"}
 pytest-cov = "^2.12.1"
+setuptools = "^57.4.0"
 
 [tool.poetry.dev-dependencies]
 
