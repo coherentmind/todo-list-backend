@@ -9,7 +9,7 @@ router = APIRouter()
 router.include_router(user.router, prefix="/user")
 
 
-@router.post("/")
+@router.post("/user/")
 def create_new_user(
     db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserCreate
 ) -> schemas.UserCreate:
@@ -19,7 +19,7 @@ def create_new_user(
     return data
 
 
-@router.put("/")
+@router.put("/user/")
 def update_user_data(
     data: schemas.UserUpdate,
     db: MySQLConnection = Depends(deps.get_db),
