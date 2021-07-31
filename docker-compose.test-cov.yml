@@ -16,7 +16,7 @@ services:
         build: .
         ports:
         - "8000:8000"
-        command: "poetry run pytest ${TEST:-} -n ${JOBS:-4} --cov=app --cov-report html:coverage tests/"
+        command: "poetry run pytest ${TEST:-} --cov=app --cov-report html:coverage tests/"
         environment:
         - ENV_STATE=dev
         volumes:
