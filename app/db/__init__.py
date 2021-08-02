@@ -15,6 +15,6 @@ def connect() -> MySQLConnection:
 def init_db(db: MySQLConnection) -> None:
     scripts_location = "app/db/sql"
     cursor = db.cursor()
-    for i in os.listdir(scripts_location):
+    for i in sorted(os.listdir(scripts_location)):
         with open(scripts_location + "/" + i) as file:
             cursor.execute(file.read())

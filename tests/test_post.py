@@ -18,3 +18,12 @@ def test_create_new_user(
 
     result = crud.user.get(db, id=request.id)
     assert result.id == request.json()["id"]
+
+
+def test_correct_endpoint(
+    db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserCreate
+) -> None:
+    email = "clownfest@gmail.com"
+    password = "123456789"
+    request = client.post("/1234/", json={"email": email, "password": password})
+    assert request.status_code == 404, request.content
