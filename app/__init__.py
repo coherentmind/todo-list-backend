@@ -4,7 +4,6 @@ from app import db
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
-app.include_router(router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,6 +12,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+app.include_router(router)
 
 
 @app.on_event("startup")
