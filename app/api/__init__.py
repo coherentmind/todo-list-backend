@@ -12,7 +12,7 @@ router.include_router(user.router, prefix="/user")
 @router.post("/user/")
 def create_new_user(
     db: MySQLConnection = Depends(deps.get_db), *, data: schemas.UserCreate
-) -> schemas.UserCreate:
+) -> schemas.UserReturn:
     res = crud.user.create(
         db, data=schemas.UserCreate(email=data.email, password=data.password)
     )
@@ -35,8 +35,9 @@ def create_new_task(
     db: MySQLConnection = Depends(deps.get_db),
     current_user: schemas.UserReturn = Depends(deps.get_current_user),
 ) -> schemas.TaskCreate:
-    res = crud.task.create(db, data=schemas.TaskCreate(name=data.name))
-    return res
+    data_extended = schemas.TaskCreateExtended(**data.dict(), owner_id=current_user.id)
+    crud.task.create(db, data=data_extended)
+    return schemas.TaskReturn
 
 
 @router.put("/task/")
