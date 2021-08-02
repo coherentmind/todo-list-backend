@@ -44,7 +44,7 @@ class TaskCRUD(
     ) -> schemas.TaskReturn:
         cursor = db.cursor()
         cursor.execute(
-            f"INSERT INTO task (id, name, completness, date) VALUES('{data.name}', '{data.completness}')"
+            f"INSERT INTO task (name, completness) VALUES('{data.name}', '{data.completness}')"
         )
         cursor.execute(f"SELECT LAST_INSERT_ID()")
         (id,) = next(cursor)
