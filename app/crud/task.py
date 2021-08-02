@@ -5,21 +5,32 @@ from app.crud.base import BaseCRUD
 from typing import Optional
 from app import schemas
 from mysql.connector import MySQLConnection
+from datetime import datetime
 
 
 class TaskCRUD(
     BaseCRUD[schemas.TaskCreateExtended, schemas.TaskUpdate, schemas.TaskReturn]
 ):
-    def get(self, db: MySQLConnection, *, id: int) -> Optional[schemas.TaskReturn]:
+    def get(
+        self, db: MySQLConnection, *, id: int, data: schemas.TaskReturn
+    ) -> Optional[schemas.TaskReturn]:
         cursor = db.cursor()
-        cursor.execute(f"SELECT id, name, completness, date FROM task WHERE id={id}")
+        cursor.execute(
+            f"SELECT id, task_name, completness, creation_date, owner_id FROM task WHERE id={id}"
+        )
         try:
             data = next(cursor)
         except StopIteration:
             return None
         else:
-            id = data
-            return schemas.TaskReturn(id=id)
+            (id, task_name, completness, creation_date, owner_id) = data
+            return schemas.TaskReturn(
+                id=id,
+                task_name=task_name,
+                completness=completness,
+                creation_date=creation_date,
+                owner_id=owner_id,
+            )
         finally:
             cursor.close()
 
@@ -34,7 +45,7 @@ class TaskCRUD(
         self, db: MySQLConnection, *, owner_id: int
     ) -> list[schemas.TaskReturn]:
         cursor = db.cursor()
-        cursor.execute(f"SELECT name FROM task WHERE owner_id='{id}'")
+        cursor.execute(f"SELECT take_name FROM task WHERE owner_id='{id}'")
         res = [schemas.TaskReturn(id=id) for id in cursor]
         cursor.close()
         return res
@@ -44,18 +55,18 @@ class TaskCRUD(
     ) -> schemas.TaskReturn:
         cursor = db.cursor()
         cursor.execute(
-            f"INSERT INTO task (name, completness) VALUES('{data.name}', '{data.completness}')"
+            f"INSERT INTO task (task_name, creation_date, owner_id) VALUES('{data.task_name}', '{datetime.now()}', '{data.owner_id}')"
         )
         cursor.execute(f"SELECT LAST_INSERT_ID()")
         (id,) = next(cursor)
         db.commit()
         cursor.close()
-        return self.get(db, id=id)
+        return self.get(db, id=id, data=data)
 
-    def update(self, db: MySQLConnection, *, data: schemas.TaskUpdate) -> None:
+    def update(self, db: MySQLConnection, *, data: schemas.TaskUpdate, id: int) -> None:
         cursor = db.cursor()
         cursor.execute(
-            f"UPDATE task SET name='{data.name}', completness='{data.completness}' WHERE id='{id}'"
+            f"UPDATE task SET task_name='{data.task_name}', completness='{data.completness}' WHERE id='{id}'"
         )
         db.commit()
         cursor.close()

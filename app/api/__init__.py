@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends
+from fastapi.routing import get_request_handler
 from mysql.connector import MySQLConnection
+from requests.models import HTTPError
 from app.api import deps
+from fastapi import HTTPException
 
 from app.api.routes import user
 from app import crud, schemas
@@ -31,13 +34,13 @@ def update_user_data(
 
 @router.post("/task/")
 def create_new_task(
-    data: schemas.TaskCreateExtended,
+    data: schemas.TaskCreate,
     db: MySQLConnection = Depends(deps.get_db),
     current_user: schemas.UserReturn = Depends(deps.get_current_user),
 ) -> schemas.TaskCreate:
     data_extended = schemas.TaskCreateExtended(**data.dict(), owner_id=current_user.id)
-    crud.task.create(db, data=data_extended)
-    return schemas.TaskReturn
+    res = crud.task.create(db, data=data_extended)
+    return res
 
 
 @router.put("/task/")
@@ -46,8 +49,14 @@ def update_task_data(
     db: MySQLConnection = Depends(deps.get_db),
     current_user: schemas.UserReturn = Depends(deps.get_current_user),
 ) -> schemas.TaskUpdate:
-    crud.task.update(db, id=current_user, data=data)
-    return schemas.Msg(msg="Task was seccessfully updated")
+    get_request = crud.task.get(db, id=current_user.id, data=data)
+    if not get_request:
+        raise HTTPException(404, "Not found")
+    elif current_user.id != data.owner_id:
+        raise HTTPException(403, "Forbidden")
+    else:
+        crud.task.update(db, data=data)
+        return schemas.Msg(msg="Task was successfully updated")
 
 
 @router.delete("/task/")

@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class TaskCreate(BaseModel):
-    name: str
+    task_name: str
 
 
 class TaskCreateExtended(TaskCreate):
@@ -11,12 +11,13 @@ class TaskCreateExtended(TaskCreate):
 
 
 class TaskUpdate(BaseModel):
-    name: str
+    task_name: str
     completness: bool
 
 
 class TaskReturn(BaseModel):
     id: int
-    name: str
+    task_name: str
     completness: bool
-    date: datetime
+    creation_date: datetime
+    owner_id: int
