@@ -65,5 +65,11 @@ def delete_task(
     db: MySQLConnection = Depends(deps.get_db),
     current_user: schemas.UserReturn = Depends(deps.get_current_user),
 ) -> None:
-    crud.task.delete(db, id=data.id)
-    return schemas.Msg(msg="Your task was seccessfully deleted")
+    get_request = crud.task.get(db, id=current_user.id, data=data)
+    if not get_request:
+        raise HTTPException(404, "Not found")
+    elif current_user.id != data.owner_id:
+        raise HTTPException(403, "Forbidden")
+    else:
+        crud.task.delete(db, id=data.id)
+        return schemas.Msg(msg="Your task was seccessfully deleted")
