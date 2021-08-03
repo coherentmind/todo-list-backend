@@ -11,9 +11,7 @@ from datetime import datetime
 class TaskCRUD(
     BaseCRUD[schemas.TaskCreateExtended, schemas.TaskUpdate, schemas.TaskReturn]
 ):
-    def get(
-        self, db: MySQLConnection, *, id: int, data: schemas.TaskReturn
-    ) -> Optional[schemas.TaskReturn]:
+    def get(self, db: MySQLConnection, *, id: int) -> Optional[schemas.TaskReturn]:
         cursor = db.cursor()
         cursor.execute(
             f"SELECT id, task_name, completness, creation_date, owner_id FROM task WHERE id={id}"
@@ -36,8 +34,19 @@ class TaskCRUD(
 
     def get_multi(self, db: MySQLConnection) -> list[schemas.TaskReturn]:
         cursor = db.cursor()
-        cursor.execute(f"SELECT id FROM task")
-        res = [schemas.TaskReturn(id=id) for id in cursor]
+        cursor.execute(
+            f"SELECT id, task_name, completeness, creation_date, owner_id FROM task"
+        )
+        res = [
+            schemas.TaskReturn(
+                id=id,
+                task_name=task_name,
+                completeness=completeness,
+                creation_date=creation_date,
+                owner_id=owner_id,
+            )
+            for id, task_name, completeness, creation_date, owner_id in cursor
+        ]
         cursor.close()
         return res
 
@@ -45,8 +54,19 @@ class TaskCRUD(
         self, db: MySQLConnection, *, owner_id: int
     ) -> list[schemas.TaskReturn]:
         cursor = db.cursor()
-        cursor.execute(f"SELECT take_name FROM task WHERE owner_id='{id}'")
-        res = [schemas.TaskReturn(id=id) for id in cursor]
+        cursor.execute(
+            f"SELECT id, task_name, completeness, creation_date, owner_id FROM task WHERE owner_id='{owner_id}'"
+        )
+        res = [
+            schemas.TaskReturn(
+                id=id,
+                task_name=task_name,
+                completeness=completeness,
+                creation_date=creation_date,
+                owner_id=owner_id,
+            )
+            for id, task_name, completeness, creation_date, owner_id in cursor
+        ]
         cursor.close()
         return res
 
@@ -66,7 +86,7 @@ class TaskCRUD(
     def update(self, db: MySQLConnection, *, data: schemas.TaskUpdate, id: int) -> None:
         cursor = db.cursor()
         cursor.execute(
-            f"UPDATE task SET task_name='{data.task_name}', completness='{data.completness}' WHERE id='{id}'"
+            f"UPDATE task SET task_name='{data.task_name}', completness='{int(data.completness)}' WHERE id='{id}'"
         )
         db.commit()
         cursor.close()
@@ -74,6 +94,6 @@ class TaskCRUD(
 
     def delete(self, db: MySQLConnection, *, id: int) -> None:
         cursor = db.cursor()
-        if id not in cursor.execute(f"SELECT * FROM users WHERE id='{id}'"):
-            cursor.close()
-            return None
+        cursor.execute(f"DELETE FROM task WHERE id='{id}'")
+        db.commit()
+        cursor.close()

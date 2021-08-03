@@ -12,12 +12,12 @@ class TaskCreateExtended(TaskCreate):
 
 class TaskUpdate(BaseModel):
     task_name: str
-    completness: bool
+    completeness: bool
 
 
 class TaskReturn(BaseModel):
     id: int
     task_name: str
-    completness: bool
+    completeness: bool
     creation_date: datetime
     owner_id: int

@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS task(
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     task_name VARCHAR(500) NOT NULL,
     creation_date DATETIME NOT NULL,
-    completness BOOLEAN DEFAULT 0 NOT NULL,
+    completeness BOOLEAN DEFAULT 0 NOT NULL,
     owner_id INT(6) UNSIGNED NOT NULL,
     FOREIGN KEY (owner_id) REFERENCES users(id)
 );
