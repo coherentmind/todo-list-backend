@@ -33,7 +33,7 @@ def update_task_data(
     db: MySQLConnection = Depends(deps.get_db),
     current_user: schemas.UserReturn = Depends(deps.get_current_user),
 ) -> schemas.Msg:
-    get_request = crud.task.get(db, id=task_id, data=data)
+    get_request = crud.task.get(db, id=task_id)
     if not get_request:
         raise HTTPException(404, "Not found")
     elif current_user.id != get_request.owner_id:

@@ -1,5 +1,4 @@
 from app import db
-from typing import Optional
 from mysql.connector import MySQLConnection
 from fastapi import Depends, HTTPException
 from app import schemas

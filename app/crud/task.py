@@ -86,7 +86,7 @@ class TaskCRUD(
     def update(self, db: MySQLConnection, *, data: schemas.TaskUpdate, id: int) -> None:
         cursor = db.cursor()
         cursor.execute(
-            f"UPDATE task SET task_name='{data.task_name}', completness='{int(data.completness)}' WHERE id='{id}'"
+            f"UPDATE task SET task_name='{data.task_name}', completeness='{int(data.completeness)}' WHERE id='{id}'"
         )
         db.commit()
         cursor.close()
