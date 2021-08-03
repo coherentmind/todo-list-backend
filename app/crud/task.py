@@ -14,18 +14,18 @@ class TaskCRUD(
     def get(self, db: MySQLConnection, *, id: int) -> Optional[schemas.TaskReturn]:
         cursor = db.cursor()
         cursor.execute(
-            f"SELECT id, task_name, completness, creation_date, owner_id FROM task WHERE id={id}"
+            f"SELECT id, task_name, completeness, creation_date, owner_id FROM task WHERE id={id}"
         )
         try:
             data = next(cursor)
         except StopIteration:
             return None
         else:
-            (id, task_name, completness, creation_date, owner_id) = data
+            (id, task_name, completeness, creation_date, owner_id) = data
             return schemas.TaskReturn(
                 id=id,
                 task_name=task_name,
-                completness=completness,
+                completeness=completeness,
                 creation_date=creation_date,
                 owner_id=owner_id,
             )
@@ -81,7 +81,7 @@ class TaskCRUD(
         (id,) = next(cursor)
         db.commit()
         cursor.close()
-        return self.get(db, id=id, data=data)
+        return self.get(db, id=id)
 
     def update(self, db: MySQLConnection, *, data: schemas.TaskUpdate, id: int) -> None:
         cursor = db.cursor()
