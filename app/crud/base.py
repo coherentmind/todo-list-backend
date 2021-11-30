@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional, TypeVar, Generic
-from app import schemas
 from mysql.connector import MySQLConnection
 
 _CreateType = TypeVar("_CreateType")

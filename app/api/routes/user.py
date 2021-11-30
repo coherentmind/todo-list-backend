@@ -1,6 +1,5 @@
-from app import crud, db, schemas
-from fastapi import APIRouter, HTTPException
-from typing import Any, Union
+from app import crud, schemas
+from fastapi import APIRouter
 from fastapi import APIRouter, Depends
 from mysql.connector import MySQLConnection
 from app.api import deps
